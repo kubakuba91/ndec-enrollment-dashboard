@@ -383,7 +383,7 @@ function DetailPanel({ signup, onClose }) {
 }
 
 // ─── EXPORT CSV ──────────────────────────────────────────────────────────────
-function exportCSV(signups) {
+function exportCSV(signups, periodKey = 'all') {
   const rows = [
     ['ID','Display Name','User Login','Email','First Name','Last Name','Town','County','State','ZIP',
      'Registered','Last Login','Active',
@@ -410,13 +410,15 @@ function exportCSV(signups) {
   });
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  const a = Object.assign(document.createElement('a'), { href: url, download: `NDEC_Enrollments_${new Date().toISOString().slice(0,10)}.csv` });
+  const a = Object.assign(document.createElement('a'), { href: url, download: `NDEC_Enrollments_${periodKey}_${new Date().toISOString().slice(0,10)}.csv` });
   a.click(); URL.revokeObjectURL(url);
 }
 
 // ─── LIVE FEED ───────────────────────────────────────────────────────────────
-function LiveFeed({ recentSignups }) {
+function LiveFeed({ recentSignups, dashboardPeriod }) {
   const [expanded, setExpanded] = useState(null);
+  const [exportPeriod, setExportPeriod] = useState(dashboardPeriod || 'all');
+  useEffect(() => { setExportPeriod(dashboardPeriod || 'all'); }, [dashboardPeriod]);
   return (
     <div style={{ background: '#ffffff', border: '1px solid #d0d7de', borderRadius: 8,
       overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -430,7 +432,17 @@ function LiveFeed({ recentSignups }) {
           textTransform: 'none', letterSpacing: 0, color: '#656d76' }}>
           {recentSignups.length} recent · click to expand
         </span>
-        <button onClick={() => exportCSV(recentSignups)}
+        <select value={exportPeriod} onChange={e => setExportPeriod(e.target.value)}
+          style={{ padding: '4px 8px', fontSize: 11, background: '#f6f8fa',
+            border: '1px solid #d0d7de', borderRadius: 5, color: '#1f2328',
+            textTransform: 'none', letterSpacing: 0, cursor: 'pointer' }}>
+          <option value="all">All time</option>
+          <option value="weekly">This week</option>
+          <option value="monthly">This month</option>
+          <option value="quarterly">This quarter</option>
+          <option value="yearly">This year</option>
+        </select>
+        <button onClick={() => exportCSV(filterByPeriod(recentSignups, exportPeriod), exportPeriod)}
           style={{ padding: '4px 12px', fontSize: 11, fontWeight: 600, background: '#eaeef2',
             border: '1px solid #d0d7de', borderRadius: 5, color: '#1f2328', cursor: 'pointer',
             textTransform: 'none', letterSpacing: 0, transition: 'background 0.15s' }}
@@ -853,7 +865,7 @@ function App() {
         </div>
 
         <div style={{ flex: 1, marginLeft: 12 }}>
-          <LiveFeed recentSignups={[...signups].sort((a, b) => a.user_registered - b.user_registered).slice(-50).reverse()} />
+          <LiveFeed dashboardPeriod={period} recentSignups={[...signups].sort((a, b) => a.user_registered - b.user_registered).slice(-50).reverse()} />
         </div>
       </div>
     </div>
