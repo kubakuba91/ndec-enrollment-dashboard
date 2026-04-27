@@ -329,18 +329,35 @@ function USAMap({ signups, onNodeClick, selectedId, mapView, setMapView }) {
     );
   }
 
+  const isStateView  = mapView !== 'usa';
+  const stateFips    = isStateView ? String(mapView).padStart(2,'0') : null;
+  const stateFeature = isStateView ? topo.states.features.find(f => String(f.id).padStart(2,'0') === stateFips) : null;
+  const stateAbbr    = stateFeature ? STATE_NAME_TO_ABBR[stateFeature.properties.name] : null;
+
+  const projection = isStateView && stateFeature
+    ? window.d3.geoMercator().fitExtent([[12,12],[W-12,H-12]], stateFeature)
+    : window.d3.geoAlbersUsa().fitExtent([[6,6],[W-6,H-6]], topo.states);
+  const pathGen = window.d3.geoPath(projection);
+
   const enrollByAbbr = {};
   signups.forEach(s => { enrollByAbbr[s.state] = (enrollByAbbr[s.state] || 0) + 1; });
   const maxByState = Math.max(...Object.values(enrollByAbbr), 1);
 
-  const projection = window.d3.geoAlbersUsa().fitExtent([[6,6],[W-6,H-6]], topo.states);
-  const pathGen    = window.d3.geoPath(projection);
+  const stateSignups = isStateView ? signups.filter(s => s.state === stateAbbr) : [];
+  const projectedNodes = stateSignups.map(s => {
+    const p = projection([s.lng, s.lat]);
+    return p ? { signup: s, x: p[0], y: p[1] } : null;
+  }).filter(Boolean);
+
+  const stateCounties = isStateView
+    ? topo.counties.features.filter(c => String(c.id).padStart(5,'0').slice(0,2) === stateFips)
+    : [];
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: '100%', display: 'block' }} preserveAspectRatio="xMidYMid meet">
         <rect width={W} height={H} fill="#dce8f5" />
-        {topo.states.features.map(f => {
+        {!isStateView && topo.states.features.map(f => {
           const abbr = STATE_NAME_TO_ABBR[f.properties.name];
           const count = enrollByAbbr[abbr] || 0;
           const intensity = count / maxByState;
@@ -353,14 +370,40 @@ function USAMap({ signups, onNodeClick, selectedId, mapView, setMapView }) {
               onMouseLeave={() => setHovered(null)} />
           );
         })}
+        {isStateView && stateCounties.map(c => (
+          <path key={c.id} d={pathGen(c)} fill="#cdd9ea" stroke="#ffffff" strokeWidth="0.4"
+            onMouseEnter={() => setHovered({ name: `${c.properties.name} County`, count: null })}
+            onMouseLeave={() => setHovered(null)} />
+        ))}
+        {isStateView && stateFeature && (
+          <path d={pathGen(stateFeature)} fill="none" stroke="#94a3b8" strokeWidth="1" />
+        )}
+        {isStateView && projectedNodes.map(({ signup, x, y }) => {
+          const col = signup.onboarding.q2_internet_home ? '#58a6ff' : '#f59e0b';
+          const isSel = signup.id === selectedId;
+          return (
+            <g key={signup.id} style={{ cursor: 'pointer' }} onClick={() => onNodeClick(signup)}>
+              <circle cx={x} cy={y} r={6} fill={col} opacity="0.22" />
+              <circle cx={x} cy={y} r={isSel ? 5 : 3.5} fill={col} opacity={isSel ? 1 : 0.9}
+                stroke={isSel ? '#ffffff' : 'none'} strokeWidth={isSel ? 1.2 : 0} />
+            </g>
+          );
+        })}
       </svg>
       {hovered && (
-        <div style={{ position: 'absolute', top: 8, left: 8, background: '#ffffffdd', backdropFilter: 'blur(4px)',
+        <div style={{ position: 'absolute', top: 8, left: isStateView ? 90 : 8, background: '#ffffffdd', backdropFilter: 'blur(4px)',
           border: '1px solid #d0d7de', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#1f2328',
           pointerEvents: 'none' }}>
           <span style={{ fontWeight: 700 }}>{hovered.name}</span>
-          <span style={{ color: '#656d76', marginLeft: 6 }}>{hovered.count} enrollment{hovered.count === 1 ? '' : 's'}</span>
+          {hovered.count != null && <span style={{ color: '#656d76', marginLeft: 6 }}>{hovered.count} enrollment{hovered.count === 1 ? '' : 's'}</span>}
         </div>
+      )}
+      {isStateView && (
+        <button onClick={() => setMapView('usa')}
+          style={{ position: 'absolute', top: 8, left: 8, padding: '4px 10px', fontSize: 11, fontWeight: 600,
+            background: '#ffffffdd', border: '1px solid #d0d7de', borderRadius: 5, color: '#1f2328', cursor: 'pointer' }}>
+          ← Back to USA
+        </button>
       )}
     </div>
   );
