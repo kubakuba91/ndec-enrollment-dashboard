@@ -169,120 +169,6 @@ function EnrollmentBars({ signups, mode }) {
   );
 }
 
-// ─── MAINE MAP ───────────────────────────────────────────────────────────────
-const MAINE_PATH = `
-  M 63,28 L 165,14 L 270,15
-  L 289,43 L 283,79 L 265,109 L 269,144 L 287,158
-  L 295,180 L 281,198 L 266,217 L 251,237
-  L 236,252 L 219,268 L 203,280 L 191,294
-  L 182,306 L 171,314 L 161,322 L 150,331
-  L 139,341 L 127,353 L 112,367 L 98,378
-  L 86,372 L 75,360 L 68,345 L 62,328
-  L 55,310 L 51,292 L 51,274 L 56,257
-  L 52,240 L 55,222 L 51,204 L 55,187
-  L 51,170 L 55,152 L 57,134 L 54,117
-  L 57,100 L 59,82 L 57,64 L 60,44 Z
-`;
-
-function MaineMap({ signups, onNodeClick, selectedId }) {
-  const [hovered, setHovered] = useState(null);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-  const svgRef = useRef();
-
-  const clusters = {};
-  signups.forEach(s => {
-    const key = `${Math.round(s.mapX / 6) * 6},${Math.round(s.mapY / 6) * 6}`;
-    if (!clusters[key]) clusters[key] = [];
-    clusters[key].push(s);
-  });
-  const nodes = Object.entries(clusters).map(([key, members]) => ({
-    key, members,
-    x: members.reduce((a, b) => a + b.mapX, 0) / members.length,
-    y: members.reduce((a, b) => a + b.mapY, 0) / members.length,
-    pctInternet: members.filter(m => m.onboarding.q2_internet_home).length / members.length,
-    r: Math.max(5, Math.min(14, 4 + members.length * 0.8)),
-    isSelected: members.some(m => m.id === selectedId),
-  }));
-
-  const CITY_LABELS = [
-    { label: 'Portland', x: 132, y: 348 }, { label: 'Bangor', x: 198, y: 178 },
-    { label: 'Augusta', x: 155, y: 258 }, { label: 'Presque Isle', x: 245, y: 48 },
-    { label: 'Ellsworth', x: 226, y: 224 },
-  ];
-
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <svg ref={svgRef} viewBox="0 0 360 420" style={{ width: '100%', height: '100%', display: 'block' }} preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="cb" /><feMerge><feMergeNode in="cb" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-          <filter id="glows"><feGaussianBlur stdDeviation="4" result="cb" /><feMerge><feMergeNode in="cb" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-        </defs>
-        <rect width="360" height="420" fill="#dce8f5" />
-        <path d={MAINE_PATH} fill="#cdd9ea" stroke="#d0d7de" strokeWidth="1.5" />
-        {CITY_LABELS.map(c => (
-          <text key={c.label} x={c.x} y={c.y} fontSize="7" fill="#6b7280" textAnchor="middle"
-            fontFamily="'Helvetica Neue',sans-serif" letterSpacing="0.5">{c.label}</text>
-        ))}
-        <text x="118" y="200" fontSize="22" fill="#000000" fillOpacity="0.05"
-          fontFamily="'Helvetica Neue',sans-serif" fontWeight="700" letterSpacing="8">MAINE</text>
-        {nodes.map(node => {
-          const col = node.pctInternet > 0.5 ? '#58a6ff' : '#f59e0b';
-          return (
-            <g key={node.key} style={{ cursor: 'pointer' }}
-              onClick={() => onNodeClick(node.members[0])}
-              onMouseEnter={e => {
-                setHovered(node);
-                const r = svgRef.current.getBoundingClientRect();
-                setTooltipPos({ x: node.x * (r.width / 360) + r.left, y: node.y * (r.height / 420) + r.top });
-              }}
-              onMouseLeave={() => setHovered(null)}>
-              {node.members.some(m => m.isNew) && (
-                <circle cx={node.x} cy={node.y} r={node.r + 6} fill="none" stroke="#3fb950"
-                  strokeWidth="1.5" style={{ animation: 'ripple 1.5s ease-out infinite' }} opacity="0.7" />
-              )}
-              {node.isSelected && <circle cx={node.x} cy={node.y} r={node.r + 4} fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />}
-              <circle cx={node.x} cy={node.y} r={node.r + 2} fill={col} opacity="0.18" filter="url(#glow)" />
-              <circle cx={node.x} cy={node.y} r={node.r} fill={col} opacity={node.isSelected ? 1 : 0.85}
-                filter={node.isSelected ? 'url(#glows)' : undefined} />
-              {node.members.length > 1 && (
-                <text x={node.x} y={node.y + 3.5} textAnchor="middle" fontSize={node.r > 9 ? 7 : 6}
-                  fontWeight="700" fill="#f6f8fa" fontFamily="'Helvetica Neue',sans-serif">{node.members.length}</text>
-              )}
-            </g>
-          );
-        })}
-        <text x="295" y="310" fontSize="7.5" fill="#000000" fillOpacity="0.12"
-          fontFamily="'Helvetica Neue',sans-serif" fontStyle="italic" transform="rotate(-35,295,310)">Atlantic Ocean</text>
-      </svg>
-
-      {hovered && (
-        <div style={{ position: 'fixed', left: tooltipPos.x + 12, top: tooltipPos.y - 10,
-          background: '#f0f2f5', border: '1px solid #d0d7de', borderRadius: 6, padding: '8px 12px',
-          fontSize: 12, color: '#1f2328', pointerEvents: 'none', zIndex: 100, whiteSpace: 'nowrap',
-          boxShadow: '0 4px 16px #00000060' }}>
-          <div style={{ fontWeight: 700 }}>{hovered.members[0].town}, {hovered.members[0].county} Co.</div>
-          <div style={{ color: '#656d76', marginTop: 2 }}>{hovered.members.length} enrollment{hovered.members.length > 1 ? 's' : ''}</div>
-          <div style={{ color: hovered.pctInternet > 0.5 ? '#58a6ff' : '#f59e0b', marginTop: 2, fontSize: 11 }}>
-            {Math.round(hovered.pctInternet * 100)}% have home internet
-          </div>
-        </div>
-      )}
-
-      <div style={{ position: 'absolute', bottom: 10, left: 10, background: '#ffffffdd',
-        backdropFilter: 'blur(4px)', border: '1px solid #d0d7de', borderRadius: 6,
-        padding: '8px 12px', fontSize: 11, color: '#656d76', display: 'flex', flexDirection: 'column', gap: 5 }}>
-        {[['#58a6ff', 'Has home internet'], ['#f59e0b', 'No home internet'], ['border:#3fb950', 'New signup']].map(([c, l]) => (
-          <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 9, height: 9, borderRadius: '50%', display: 'inline-block',
-              background: c.startsWith('border') ? 'transparent' : c,
-              border: c.startsWith('border') ? '1.5px solid #3fb950' : 'none' }} />
-            {l}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ─── USA MAP ─────────────────────────────────────────────────────────────────
 // FIPS prefixes that are not US states (territories) — filtered out of USA view.
@@ -296,6 +182,16 @@ const STATE_NAME_TO_ABBR = {
   'New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',
   Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',Tennessee:'TN',Texas:'TX',Utah:'UT',
   Vermont:'VT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY',
+};
+const STATE_FIPS_TO_NAME = {
+  '01':'Alabama','02':'Alaska','04':'Arizona','05':'Arkansas','06':'California','08':'Colorado','09':'Connecticut',
+  '10':'Delaware','11':'District of Columbia','12':'Florida','13':'Georgia','15':'Hawaii','16':'Idaho','17':'Illinois',
+  '18':'Indiana','19':'Iowa','20':'Kansas','21':'Kentucky','22':'Louisiana','23':'Maine','24':'Maryland','25':'Massachusetts',
+  '26':'Michigan','27':'Minnesota','28':'Mississippi','29':'Missouri','30':'Montana','31':'Nebraska','32':'Nevada',
+  '33':'New Hampshire','34':'New Jersey','35':'New Mexico','36':'New York','37':'North Carolina','38':'North Dakota',
+  '39':'Ohio','40':'Oklahoma','41':'Oregon','42':'Pennsylvania','44':'Rhode Island','45':'South Carolina','46':'South Dakota',
+  '47':'Tennessee','48':'Texas','49':'Utah','50':'Vermont','51':'Virginia','53':'Washington','54':'West Virginia',
+  '55':'Wisconsin','56':'Wyoming',
 };
 
 function useTopoData() {
@@ -868,6 +764,7 @@ function App() {
   const [partnerPanel, setPartnerPanel] = useState(false);
   const [activePanel, setActivePanel]   = useState(false);
   const [period, setPeriod]             = useState('weekly');
+  const [mapView, setMapView]           = useState('usa');
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -980,11 +877,20 @@ function App() {
           borderRadius: 8, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '10px 14px', borderBottom: '1px solid #d0d7de', flexShrink: 0,
             display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#1f2328' }}>Maine Enrollment Map</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#1f2328', display: 'flex', alignItems: 'center', gap: 6 }}>
+              {mapView === 'usa'
+                ? 'United States Enrollment Map'
+                : <>
+                    <span onClick={() => setMapView('usa')} style={{ cursor: 'pointer', color: '#58a6ff' }}>United States</span>
+                    <span style={{ color: '#9198a1' }}>›</span>
+                    <span>{STATE_FIPS_TO_NAME[String(mapView).padStart(2, '0')] || mapView}</span>
+                  </>}
+            </div>
             <div style={{ fontSize: 11, color: '#656d76' }}>{signups.length} records</div>
           </div>
           <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
-            <MaineMap signups={signups} onNodeClick={setSelected} selectedId={selected?.id} />
+            <USAMap signups={signups} onNodeClick={setSelected} selectedId={selected?.id}
+              mapView={mapView} setMapView={setMapView} />
             {selected && <DetailPanel signup={selected} onClose={() => setSelected(null)} />}
           </div>
         </div>
