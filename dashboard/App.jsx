@@ -459,7 +459,7 @@ function LiveFeed({ recentSignups }) {
                 </div>
                 <div style={{ fontSize: 11, color: '#656d76', marginTop: 2, display: 'flex', gap: 10 }}>
                   <span style={{ fontFamily: 'monospace' }}>{s.user_login}</span>
-                  <span>·</span><span>{s.town}, {s.state}</span><span>·</span>
+                  <span>·</span><span>{formatAddressShort(s)}</span><span>·</span>
                   <span style={{ color: s.onboarding.q2_internet_home ? '#3fb950' : '#f59e0b' }}>
                     {s.onboarding.q2_internet_home ? '✓ Internet' : '✗ No internet'}
                   </span>
@@ -489,7 +489,7 @@ function LiveFeed({ recentSignups }) {
                     <FeedRow label="Registered" value={fmt(s.user_registered)} />
                     <FeedRow label="Last Login" value={fmtTime(s.last_login)} />
                     <div style={{ height: 1, background: '#eaeef2', margin: '7px 0' }} />
-                    <FeedRow label="Town" value={`${s.town}, ${s.state}`} />
+                    <FeedRow label="Town" value={formatAddress(s)} />
                     <FeedRow label="County" value={`${s.county} County`} />
                     <FeedRow label="ZIP" value={s.zip} mono />
                   </div>
