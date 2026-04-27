@@ -25,6 +25,20 @@ const timeAgo = (d) => {
   return `${Math.floor(s / 86400)}d ago`;
 };
 
+// Address with inline County: "Brunswick, Cumberland County, ME 04011"
+const formatAddress      = (s) => `${s.town}, ${s.county} County, ${s.state} ${s.zip}`;
+const formatAddressShort = (s) => `${s.town}, ${s.county} County, ${s.state}`;
+
+// Period helpers — shared by KPI selector and CSV export
+const PERIOD_DAYS  = { weekly: 7, monthly: 30, quarterly: 90, yearly: 365 };
+const PERIOD_LABEL = { weekly: 'This Week', monthly: 'This Month', quarterly: 'This Quarter', yearly: 'This Year' };
+const PERIOD_PREV  = { weekly: 'prev. 7 days', monthly: 'prev. 30 days', quarterly: 'prev. 90 days', yearly: 'prev. 365 days' };
+const filterByPeriod = (signups, period) => {
+  if (period === 'all') return signups;
+  const ms = PERIOD_DAYS[period] * 86400000;
+  return signups.filter(s => Date.now() - s.user_registered < ms);
+};
+
 // ─── SMALL UTILITIES ─────────────────────────────────────────────────────────
 function Badge({ color, bg, children }) {
   return (
