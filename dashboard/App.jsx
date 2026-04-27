@@ -287,7 +287,7 @@ function USAMap({ signups, onNodeClick, selectedId, mapView, setMapView }) {
         })}
       </svg>
       {hovered && (
-        <div style={{ position: 'absolute', top: 8, left: isStateView ? 90 : 8, background: '#ffffffdd', backdropFilter: 'blur(4px)',
+        <div style={{ position: 'absolute', top: 8, right: 8, background: '#ffffffdd', backdropFilter: 'blur(4px)',
           border: '1px solid #d0d7de', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#1f2328',
           pointerEvents: 'none' }}>
           <span style={{ fontWeight: 700 }}>{hovered.name}</span>
