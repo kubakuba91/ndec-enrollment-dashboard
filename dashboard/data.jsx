@@ -85,7 +85,89 @@ const LOCATIONS = [
   { city:'Biddeford',      zip:'04005', county:'York',         state:'ME', lat:43.4926, lng:-70.4533, pg:null        },
   { city:'Kennebunk',      zip:'04043', county:'York',         state:'ME', lat:43.3842, lng:-70.5436, pg:null        },
   { city:'Skowhegan',      zip:'04976', county:'Somerset',     state:'ME', lat:44.7650, lng:-69.7184, pg:null        },
+  // ─── Other 49 states + DC ─────────────────────────────────────────────────
+  { city:'Birmingham',       zip:'35203', county:'Jefferson',           state:'AL', lat:33.5186, lng:-86.8104,  pg:null },
+  { city:'Anchorage',        zip:'99501', county:'Anchorage',           state:'AK', lat:61.2181, lng:-149.9003, pg:null },
+  { city:'Phoenix',          zip:'85001', county:'Maricopa',            state:'AZ', lat:33.4484, lng:-112.0740, pg:null },
+  { city:'Tucson',           zip:'85701', county:'Pima',                state:'AZ', lat:32.2226, lng:-110.9747, pg:null },
+  { city:'Little Rock',      zip:'72201', county:'Pulaski',             state:'AR', lat:34.7465, lng:-92.2896,  pg:null },
+  { city:'Los Angeles',      zip:'90001', county:'Los Angeles',         state:'CA', lat:34.0522, lng:-118.2437, pg:null },
+  { city:'San Francisco',    zip:'94102', county:'San Francisco',       state:'CA', lat:37.7749, lng:-122.4194, pg:null },
+  { city:'San Diego',        zip:'92101', county:'San Diego',           state:'CA', lat:32.7157, lng:-117.1611, pg:null },
+  { city:'Sacramento',       zip:'95814', county:'Sacramento',          state:'CA', lat:38.5816, lng:-121.4944, pg:null },
+  { city:'Denver',           zip:'80202', county:'Denver',              state:'CO', lat:39.7392, lng:-104.9903, pg:null },
+  { city:'Colorado Springs', zip:'80903', county:'El Paso',             state:'CO', lat:38.8339, lng:-104.8214, pg:null },
+  { city:'Hartford',         zip:'06103', county:'Hartford',            state:'CT', lat:41.7637, lng:-72.6851,  pg:null },
+  { city:'New Haven',        zip:'06510', county:'New Haven',           state:'CT', lat:41.3083, lng:-72.9279,  pg:null },
+  { city:'Wilmington',       zip:'19801', county:'New Castle',          state:'DE', lat:39.7391, lng:-75.5398,  pg:null },
+  { city:'Washington',       zip:'20001', county:'District of Columbia',state:'DC', lat:38.9072, lng:-77.0369,  pg:null },
+  { city:'Miami',            zip:'33130', county:'Miami-Dade',          state:'FL', lat:25.7617, lng:-80.1918,  pg:null },
+  { city:'Tampa',            zip:'33602', county:'Hillsborough',        state:'FL', lat:27.9506, lng:-82.4572,  pg:null },
+  { city:'Jacksonville',     zip:'32202', county:'Duval',               state:'FL', lat:30.3322, lng:-81.6557,  pg:null },
+  { city:'Orlando',          zip:'32801', county:'Orange',              state:'FL', lat:28.5383, lng:-81.3792,  pg:null },
+  { city:'Atlanta',          zip:'30303', county:'Fulton',              state:'GA', lat:33.7490, lng:-84.3880,  pg:null },
+  { city:'Savannah',         zip:'31401', county:'Chatham',             state:'GA', lat:32.0809, lng:-81.0912,  pg:null },
+  { city:'Honolulu',         zip:'96813', county:'Honolulu',            state:'HI', lat:21.3069, lng:-157.8583, pg:null },
+  { city:'Boise',            zip:'83702', county:'Ada',                 state:'ID', lat:43.6150, lng:-116.2023, pg:null },
+  { city:'Chicago',          zip:'60601', county:'Cook',                state:'IL', lat:41.8781, lng:-87.6298,  pg:null },
+  { city:'Springfield',      zip:'62701', county:'Sangamon',            state:'IL', lat:39.7817, lng:-89.6501,  pg:null },
+  { city:'Indianapolis',     zip:'46204', county:'Marion',              state:'IN', lat:39.7684, lng:-86.1581,  pg:null },
+  { city:'Des Moines',       zip:'50309', county:'Polk',                state:'IA', lat:41.5868, lng:-93.6250,  pg:null },
+  { city:'Wichita',          zip:'67202', county:'Sedgwick',            state:'KS', lat:37.6872, lng:-97.3301,  pg:null },
+  { city:'Louisville',       zip:'40202', county:'Jefferson',           state:'KY', lat:38.2527, lng:-85.7585,  pg:null },
+  { city:'New Orleans',      zip:'70112', county:'Orleans',             state:'LA', lat:29.9511, lng:-90.0715,  pg:null },
+  { city:'Baton Rouge',      zip:'70801', county:'East Baton Rouge',    state:'LA', lat:30.4515, lng:-91.1871,  pg:null },
+  { city:'Baltimore',        zip:'21202', county:'Baltimore City',      state:'MD', lat:39.2904, lng:-76.6122,  pg:null },
+  { city:'Boston',           zip:'02110', county:'Suffolk',             state:'MA', lat:42.3601, lng:-71.0589,  pg:null },
+  { city:'Cambridge',        zip:'02138', county:'Middlesex',           state:'MA', lat:42.3736, lng:-71.1097,  pg:null },
+  { city:'Detroit',          zip:'48226', county:'Wayne',               state:'MI', lat:42.3314, lng:-83.0458,  pg:null },
+  { city:'Ann Arbor',        zip:'48104', county:'Washtenaw',           state:'MI', lat:42.2808, lng:-83.7430,  pg:null },
+  { city:'Minneapolis',      zip:'55401', county:'Hennepin',            state:'MN', lat:44.9778, lng:-93.2650,  pg:null },
+  { city:'Jackson',          zip:'39201', county:'Hinds',               state:'MS', lat:32.2988, lng:-90.1848,  pg:null },
+  { city:'St. Louis',        zip:'63101', county:'St. Louis City',      state:'MO', lat:38.6270, lng:-90.1994,  pg:null },
+  { city:'Kansas City',      zip:'64108', county:'Jackson',             state:'MO', lat:39.0997, lng:-94.5786,  pg:null },
+  { city:'Billings',         zip:'59101', county:'Yellowstone',         state:'MT', lat:45.7833, lng:-108.5007, pg:null },
+  { city:'Omaha',            zip:'68102', county:'Douglas',             state:'NE', lat:41.2565, lng:-95.9345,  pg:null },
+  { city:'Las Vegas',        zip:'89101', county:'Clark',               state:'NV', lat:36.1699, lng:-115.1398, pg:null },
+  { city:'Reno',             zip:'89501', county:'Washoe',              state:'NV', lat:39.5296, lng:-119.8138, pg:null },
+  { city:'Manchester',       zip:'03101', county:'Hillsborough',        state:'NH', lat:42.9956, lng:-71.4548,  pg:null },
+  { city:'Newark',           zip:'07102', county:'Essex',               state:'NJ', lat:40.7357, lng:-74.1724,  pg:null },
+  { city:'Jersey City',      zip:'07302', county:'Hudson',              state:'NJ', lat:40.7178, lng:-74.0431,  pg:null },
+  { city:'Albuquerque',      zip:'87102', county:'Bernalillo',          state:'NM', lat:35.0844, lng:-106.6504, pg:null },
+  { city:'New York',         zip:'10001', county:'New York',            state:'NY', lat:40.7128, lng:-74.0060,  pg:null },
+  { city:'Buffalo',          zip:'14202', county:'Erie',                state:'NY', lat:42.8864, lng:-78.8784,  pg:null },
+  { city:'Albany',           zip:'12207', county:'Albany',              state:'NY', lat:42.6526, lng:-73.7562,  pg:null },
+  { city:'Charlotte',        zip:'28202', county:'Mecklenburg',         state:'NC', lat:35.2271, lng:-80.8431,  pg:null },
+  { city:'Raleigh',          zip:'27601', county:'Wake',                state:'NC', lat:35.7796, lng:-78.6382,  pg:null },
+  { city:'Fargo',            zip:'58102', county:'Cass',                state:'ND', lat:46.8772, lng:-96.7898,  pg:null },
+  { city:'Cleveland',        zip:'44113', county:'Cuyahoga',            state:'OH', lat:41.4993, lng:-81.6944,  pg:null },
+  { city:'Columbus',         zip:'43215', county:'Franklin',            state:'OH', lat:39.9612, lng:-82.9988,  pg:null },
+  { city:'Oklahoma City',    zip:'73102', county:'Oklahoma',            state:'OK', lat:35.4676, lng:-97.5164,  pg:null },
+  { city:'Portland',         zip:'97204', county:'Multnomah',           state:'OR', lat:45.5152, lng:-122.6784, pg:null },
+  { city:'Philadelphia',     zip:'19103', county:'Philadelphia',        state:'PA', lat:39.9526, lng:-75.1652,  pg:null },
+  { city:'Pittsburgh',       zip:'15222', county:'Allegheny',           state:'PA', lat:40.4406, lng:-79.9959,  pg:null },
+  { city:'Providence',       zip:'02903', county:'Providence',          state:'RI', lat:41.8240, lng:-71.4128,  pg:null },
+  { city:'Charleston',       zip:'29401', county:'Charleston',          state:'SC', lat:32.7765, lng:-79.9311,  pg:null },
+  { city:'Columbia',         zip:'29201', county:'Richland',            state:'SC', lat:34.0007, lng:-81.0348,  pg:null },
+  { city:'Sioux Falls',      zip:'57104', county:'Minnehaha',           state:'SD', lat:43.5446, lng:-96.7311,  pg:null },
+  { city:'Nashville',        zip:'37203', county:'Davidson',            state:'TN', lat:36.1627, lng:-86.7816,  pg:null },
+  { city:'Memphis',          zip:'38103', county:'Shelby',              state:'TN', lat:35.1495, lng:-90.0490,  pg:null },
+  { city:'Houston',          zip:'77002', county:'Harris',              state:'TX', lat:29.7604, lng:-95.3698,  pg:null },
+  { city:'Dallas',           zip:'75201', county:'Dallas',              state:'TX', lat:32.7767, lng:-96.7970,  pg:null },
+  { city:'Austin',           zip:'78701', county:'Travis',              state:'TX', lat:30.2672, lng:-97.7431,  pg:null },
+  { city:'San Antonio',      zip:'78205', county:'Bexar',               state:'TX', lat:29.4241, lng:-98.4936,  pg:null },
+  { city:'Salt Lake City',   zip:'84101', county:'Salt Lake',           state:'UT', lat:40.7608, lng:-111.8910, pg:null },
+  { city:'Burlington',       zip:'05401', county:'Chittenden',          state:'VT', lat:44.4759, lng:-73.2121,  pg:null },
+  { city:'Richmond',         zip:'23219', county:'Richmond City',       state:'VA', lat:37.5407, lng:-77.4360,  pg:null },
+  { city:'Virginia Beach',   zip:'23451', county:'Virginia Beach City', state:'VA', lat:36.8529, lng:-75.9780,  pg:null },
+  { city:'Seattle',          zip:'98101', county:'King',                state:'WA', lat:47.6062, lng:-122.3321, pg:null },
+  { city:'Spokane',          zip:'99201', county:'Spokane',             state:'WA', lat:47.6588, lng:-117.4260, pg:null },
+  { city:'Charleston',       zip:'25301', county:'Kanawha',             state:'WV', lat:38.3498, lng:-81.6326,  pg:null },
+  { city:'Milwaukee',        zip:'53202', county:'Milwaukee',           state:'WI', lat:43.0389, lng:-87.9065,  pg:null },
+  { city:'Madison',          zip:'53703', county:'Dane',                state:'WI', lat:43.0731, lng:-89.4012,  pg:null },
+  { city:'Cheyenne',         zip:'82001', county:'Laramie',             state:'WY', lat:41.1399, lng:-104.8197, pg:null },
 ];
+const ME_LOCATIONS = LOCATIONS.filter(l => l.state === 'ME');
 
 const FIRST = ['Mary','James','Linda','Robert','Patricia','John','Barbara','Michael','Susan','William','Jessica','David','Karen','Richard','Nancy','Joseph','Lisa','Thomas','Betty','Charles','Margaret','Christopher','Sandra','Daniel','Ashley','Matthew','Dorothy','Anthony','Kimberly','Mark','Emily','Donald','Donna','Steven','Michelle','Paul','Carol','Andrew','Amanda','Joshua','Melissa','Kenneth','Deborah','Kevin','Stephanie','Brian','Rebecca','George','Laura','Edward','Helen','Dennis','Ruth','Harold','Sharon','Jerry','Cynthia','Arthur','Kathleen','Lawrence','Amy'];
 const LAST  = ['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Wilson','Anderson','Taylor','Thomas','Moore','Jackson','Martin','Lee','Thompson','White','Harris','Sanchez','Clark','Ramirez','Lewis','Robinson','Walker','Young','Allen','King','Wright','Scott','Torres','Nguyen','Hill','Flores','Green','Adams','Nelson','Baker','Hall','Rivera','Campbell','Mitchell','Carter','Roberts','Phillips','Evans','Turner','Parker','Collins','Edwards','Stewart','Morris','Rogers','Reed','Cook','Morgan','Bell','Murphy','Bailey'];
@@ -142,7 +224,7 @@ function generateSignups(count = 148) {
   const records = [];
 
   for (let i = 0; i < count; i++) {
-    const loc  = rng.pick(LOCATIONS);
+    const loc  = rng.bool(0.5) ? rng.pick(ME_LOCATIONS) : rng.pick(LOCATIONS);
     const pg   = loc.pg ? PARTNER_GROUPS.find(g => g.id === loc.pg) : null;
 
     const firstName   = rng.pick(FIRST);
@@ -196,10 +278,10 @@ function generateSignups(count = 148) {
       last_name:     lastName,
       town:          loc.city,
       county:        loc.county,
-      state:         'ME',
+      state:         loc.state,
       zip:           loc.zip,
-      mapX:          loc.x + rng.jitter(5),
-      mapY:          loc.y + rng.jitter(5),
+      lat:           loc.lat + rng.jitter(0.05),
+      lng:           loc.lng + rng.jitter(0.05),
       user_registered: new Date(registeredMs),
       last_login:    new Date(lastLoginMs),
       onboarding: {
@@ -228,7 +310,7 @@ function makeNewSignup(existingCount) {
   const rng   = new Rng(Date.now() & 0xffffffff);
   const FIRST2= ['Alice','Carlos','Diane','Frank','Gloria','Henry','Irene','Jake','Kathy','Leon','Maria','Neil'];
   const LAST2 = ['Plunkett','Dyer','Sproul','Vose','Hamlin','Belanger','Cyr','Michaud','Roy','Landry'];
-  const loc   = rng.pick(LOCATIONS);
+  const loc   = rng.bool(0.5) ? rng.pick(ME_LOCATIONS) : rng.pick(LOCATIONS);
   const pg    = loc.pg ? PARTNER_GROUPS.find(g => g.id === loc.pg) : null;
   const firstName = rng.pick(FIRST2);
   const lastName  = rng.pick(LAST2);
@@ -246,10 +328,10 @@ function makeNewSignup(existingCount) {
     last_name:     lastName,
     town:          loc.city,
     county:        loc.county,
-    state:         'ME',
+    state:         loc.state,
     zip:           loc.zip,
-    mapX:          loc.x + rng.jitter(5),
-    mapY:          loc.y + rng.jitter(5),
+    lat:           loc.lat + rng.jitter(0.05),
+    lng:           loc.lng + rng.jitter(0.05),
     user_registered: now,
     last_login:    now,
     onboarding: {
