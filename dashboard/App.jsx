@@ -284,6 +284,49 @@ function MaineMap({ signups, onNodeClick, selectedId }) {
   );
 }
 
+// ─── USA MAP ─────────────────────────────────────────────────────────────────
+// FIPS prefixes that are not US states (territories) — filtered out of USA view.
+const NON_STATE_FIPS = new Set(['60','66','69','72','78']); // AS, GU, MP, PR, VI
+
+function useTopoData() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    Promise.all([
+      fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r => r.json()),
+      fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(r => r.json()),
+    ]).then(([statesTopo, countiesTopo]) => {
+      if (!alive) return;
+      const states   = window.topojson.feature(statesTopo,   statesTopo.objects.states);
+      const counties = window.topojson.feature(countiesTopo, countiesTopo.objects.counties);
+      states.features = states.features.filter(f => !NON_STATE_FIPS.has(String(f.id).padStart(2,'0').slice(0,2)));
+      setData({ states, counties });
+    }).catch(err => console.error('USAMap topojson load failed', err));
+    return () => { alive = false; };
+  }, []);
+  return data;
+}
+
+function USAMap({ signups, onNodeClick, selectedId, mapView, setMapView }) {
+  const topo = useTopoData();
+  const W = 360, H = 420;
+  if (!topo) {
+    return (
+      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#9198a1' }}>
+        Loading map…
+      </div>
+    );
+  }
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: '100%', display: 'block' }} preserveAspectRatio="xMidYMid meet">
+        <rect width={W} height={H} fill="#dce8f5" />
+        <text x={W/2} y={H/2} textAnchor="middle" fontSize="9" fill="#6b7280">USA map rendering coming next…</text>
+      </svg>
+    </div>
+  );
+}
+
 // ─── DETAIL PANEL ────────────────────────────────────────────────────────────
 function DetailPanel({ signup, onClose }) {
   if (!signup) return null;
