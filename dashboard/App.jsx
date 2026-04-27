@@ -100,7 +100,7 @@ function FeedRow({ label, value, color, mono }) {
 }
 
 // ─── KPI CARD ────────────────────────────────────────────────────────────────
-function KPICard({ label, value, sub, color, live, onClick, clickable, trend }) {
+function KPICard({ label, value, sub, color, live, onClick, clickable, trend, periodLabel }) {
   const prev = useRef(value);
   const [flash, setFlash] = useState(false);
   useEffect(() => {
@@ -136,7 +136,7 @@ function KPICard({ label, value, sub, color, live, onClick, clickable, trend }) 
       <div style={{ fontSize: 13, color: '#656d76', marginTop: 6 }}>{label}</div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
         {sub && <div style={{ fontSize: 11, color }}>{sub}</div>}
-        {trend != null && <div style={{ fontSize: 10, color: '#9198a1' }}>vs prev. 7 days</div>}
+        {trend != null && <div style={{ fontSize: 10, color: '#9198a1' }}>vs {periodLabel || 'prev. 7 days'}</div>}
       </div>
     </div>
   );
@@ -730,6 +730,7 @@ function App() {
   const [classPanel, setClassPanel]     = useState(false);
   const [partnerPanel, setPartnerPanel] = useState(false);
   const [activePanel, setActivePanel]   = useState(false);
+  const [period, setPeriod]             = useState('weekly');
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -747,7 +748,8 @@ function App() {
   const totalEnrollments      = signups.length;
   const totalClassEnrollments = signups.reduce((a, s) => a + s.classesEnrolled.length, 0);
   const partnerEnrollments    = signups.filter(s => s.partnerGroup).length;
-  const activeThisWeek        = signups.filter(s => Date.now() - s.last_login < 7 * 86400000).length;
+  const periodMs              = PERIOD_DAYS[period] * 86400000;
+  const activeInPeriod        = signups.filter(s => Date.now() - s.last_login < periodMs).length;
 
   return (
     <div style={{ minHeight: '100vh', background: '#f6f8fa', color: '#1f2328',
@@ -777,7 +779,18 @@ function App() {
         </div>
         <div style={{ width: 1, height: 26, background: '#d0d7de' }} />
         <div style={{ fontSize: 13, color: '#656d76' }}>Enrollment Dashboard</div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', background: '#f6f8fa', border: '1px solid #d0d7de',
+            borderRadius: 6, overflow: 'hidden' }}>
+            {[['weekly','Week'],['monthly','Month'],['quarterly','Quarter'],['yearly','Year']].map(([id,lbl]) => (
+              <button key={id} onClick={() => setPeriod(id)}
+                style={{ padding: '5px 12px', fontSize: 11,
+                  background: period === id ? '#eaeef2' : 'transparent',
+                  color: period === id ? '#1f2328' : '#656d76',
+                  border: 'none', borderRight: '1px solid #d0d7de',
+                  fontWeight: period === id ? 600 : 400, cursor: 'pointer' }}>{lbl}</button>
+            ))}
+          </div>
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#3fb950',
             display: 'inline-block', animation: 'pulse 1.4s ease infinite' }} />
           <span style={{ fontSize: 12, color: '#656d76' }}>Live · {timeAgo(new Date())}</span>
@@ -787,16 +800,16 @@ function App() {
       {/* KPIs */}
       <div style={{ padding: '14px 24px 0', display: 'flex', gap: 12, flexShrink: 0 }}>
         <KPICard label="Total Enrollments" value={totalEnrollments} color="#58a6ff" live
-          sub={`+${signups.filter(s => s.isNew).length} new today`} trend={5} />
+          sub={`+${signups.filter(s => s.isNew).length} new today`} trend={5} periodLabel={PERIOD_PREV[period]} />
         <KPICard label="Class Enrollments" value={totalClassEnrollments} color="#22d3ee"
           sub={classPanel ? '▲ Hide breakdown' : '▼ View breakdown'}
-          onClick={() => setClassPanel(p => !p)} clickable trend={12} />
+          onClick={() => setClassPanel(p => !p)} clickable trend={12} periodLabel={PERIOD_PREV[period]} />
         <KPICard label="Partner Group Enrollments" value={partnerEnrollments} color="#a78bfa"
           sub={partnerPanel ? '▲ Hide breakdown' : '▼ View breakdown'}
-          onClick={() => setPartnerPanel(p => !p)} clickable trend={3} />
-        <KPICard label="Active This Week" value={activeThisWeek} color="#3fb950"
+          onClick={() => setPartnerPanel(p => !p)} clickable trend={3} periodLabel={PERIOD_PREV[period]} />
+        <KPICard label={`Active ${PERIOD_LABEL[period]}`} value={activeInPeriod} color="#3fb950"
           sub={activePanel ? '▲ Hide users' : '▼ View users'}
-          onClick={() => setActivePanel(p => !p)} clickable trend={-2} />
+          onClick={() => setActivePanel(p => !p)} clickable trend={-2} periodLabel={PERIOD_PREV[period]} />
       </div>
 
       {/* Expandable panels */}
