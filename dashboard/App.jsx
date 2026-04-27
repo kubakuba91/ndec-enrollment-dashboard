@@ -288,6 +288,16 @@ function MaineMap({ signups, onNodeClick, selectedId }) {
 // FIPS prefixes that are not US states (territories) — filtered out of USA view.
 const NON_STATE_FIPS = new Set(['60','66','69','72','78']); // AS, GU, MP, PR, VI
 
+const STATE_NAME_TO_ABBR = {
+  Alabama:'AL',Alaska:'AK',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT',Delaware:'DE',
+  'District of Columbia':'DC',Florida:'FL',Georgia:'GA',Hawaii:'HI',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',
+  Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maine:'ME',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',
+  Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE',Nevada:'NV','New Hampshire':'NH','New Jersey':'NJ',
+  'New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',
+  Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',Tennessee:'TN',Texas:'TX',Utah:'UT',
+  Vermont:'VT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY',
+};
+
 function useTopoData() {
   const [data, setData] = useState(null);
   useEffect(() => {
@@ -309,6 +319,7 @@ function useTopoData() {
 
 function USAMap({ signups, onNodeClick, selectedId, mapView, setMapView }) {
   const topo = useTopoData();
+  const [hovered, setHovered] = useState(null);
   const W = 360, H = 420;
   if (!topo) {
     return (
@@ -317,12 +328,40 @@ function USAMap({ signups, onNodeClick, selectedId, mapView, setMapView }) {
       </div>
     );
   }
+
+  const enrollByAbbr = {};
+  signups.forEach(s => { enrollByAbbr[s.state] = (enrollByAbbr[s.state] || 0) + 1; });
+  const maxByState = Math.max(...Object.values(enrollByAbbr), 1);
+
+  const projection = window.d3.geoAlbersUsa().fitExtent([[6,6],[W-6,H-6]], topo.states);
+  const pathGen    = window.d3.geoPath(projection);
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: '100%', display: 'block' }} preserveAspectRatio="xMidYMid meet">
         <rect width={W} height={H} fill="#dce8f5" />
-        <text x={W/2} y={H/2} textAnchor="middle" fontSize="9" fill="#6b7280">USA map rendering coming next…</text>
+        {topo.states.features.map(f => {
+          const abbr = STATE_NAME_TO_ABBR[f.properties.name];
+          const count = enrollByAbbr[abbr] || 0;
+          const intensity = count / maxByState;
+          const fill = count > 0 ? `rgba(88, 166, 255, ${0.18 + intensity * 0.72})` : '#cdd9ea';
+          return (
+            <path key={f.id} d={pathGen(f)} fill={fill} stroke="#ffffff" strokeWidth="0.6"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setMapView(String(f.id).padStart(2,'0'))}
+              onMouseEnter={() => setHovered({ name: f.properties.name, count })}
+              onMouseLeave={() => setHovered(null)} />
+          );
+        })}
       </svg>
+      {hovered && (
+        <div style={{ position: 'absolute', top: 8, left: 8, background: '#ffffffdd', backdropFilter: 'blur(4px)',
+          border: '1px solid #d0d7de', borderRadius: 6, padding: '6px 10px', fontSize: 11, color: '#1f2328',
+          pointerEvents: 'none' }}>
+          <span style={{ fontWeight: 700 }}>{hovered.name}</span>
+          <span style={{ color: '#656d76', marginLeft: 6 }}>{hovered.count} enrollment{hovered.count === 1 ? '' : 's'}</span>
+        </div>
+      )}
     </div>
   );
 }
