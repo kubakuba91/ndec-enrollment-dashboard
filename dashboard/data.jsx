@@ -45,11 +45,11 @@ const GOALS = [
 ];
 
 const LOCATIONS = [
-  { city:'Portland',       zip:'04101', county:'Cumberland',   x:132, y:352, pg:'portland'  },
-  { city:'South Portland', zip:'04106', county:'Cumberland',   x:138, y:358, pg:'portland'  },
-  { city:'Scarborough',    zip:'04074', county:'Cumberland',   x:126, y:364, pg:'portland'  },
-  { city:'Westbrook',      zip:'04092', county:'Cumberland',   x:128, y:356, pg:'portland'  },
-  { city:'Brunswick',      zip:'04011', county:'Cumberland',   x:140, y:332, pg:'portland'  },
+  { city:'Portland',       zip:'04101', county:'Cumberland', state:'ME', lat:43.6591, lng:-70.2568, pg:'portland'  },
+  { city:'South Portland', zip:'04106', county:'Cumberland', state:'ME', lat:43.6414, lng:-70.2412, pg:'portland'  },
+  { city:'Scarborough',    zip:'04074', county:'Cumberland', state:'ME', lat:43.5781, lng:-70.3220, pg:'portland'  },
+  { city:'Westbrook',      zip:'04092', county:'Cumberland', state:'ME', lat:43.6770, lng:-70.3712, pg:'portland'  },
+  { city:'Brunswick',      zip:'04011', county:'Cumberland', state:'ME', lat:43.9136, lng:-69.9658, pg:'portland'  },
   { city:'Bangor',         zip:'04401', county:'Penobscot',    x:198, y:182, pg:'penobscot' },
   { city:'Brewer',         zip:'04412', county:'Penobscot',    x:204, y:186, pg:'penobscot' },
   { city:'Old Town',       zip:'04468', county:'Penobscot',    x:200, y:174, pg:'penobscot' },
