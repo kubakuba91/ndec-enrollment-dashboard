@@ -176,6 +176,7 @@ const EXPERIENCE = ['Just getting started','Some experience','Comfortable, want 
 const ONBOARDING_Q3 = ['Yes – interested in affordable internet options', 'No – not needed right now'];
 const SPONSOR_STATUSES = ['Active','Pending Verification','Approved','Waitlisted'];
 const CLASS_FORMATS = ['Live Online','On Demand','Both Available'];
+const RACE_OPTIONS = ['White','Black or African American','Hispanic or Latino','Asian','American Indian or Alaska Native','Native Hawaiian or Other Pacific Islander','Two or More Races','Prefer not to say'];
 
 class Rng {
   constructor(s) { this.s = s >>> 0; }
@@ -238,6 +239,7 @@ function generateSignups(count = 148) {
     const hasInternet = rng.bool(0.68);
     const interestedInAffordable = !hasInternet ? rng.pick(ONBOARDING_Q3) : null;
     const householdSize = loc.pg === 'lincoln' ? rng.int(5) + 1 : null;
+    const race          = loc.pg === 'lincoln' ? rng.pick(RACE_OPTIONS) : null;
 
     const recommended = makeRecommendedClasses(goal, device, rng, CLASSES);
     const numEnrolled = rng.int(Math.min(recommended.length, 3)) + 1;
@@ -293,6 +295,7 @@ function generateSignups(count = 148) {
         device_type:       device,
         experience_level:  experience,
         household_size:    householdSize,
+        race:              race,
       },
       classesRecommended: recommended,
       classesEnrolled:    enrolledClasses,
@@ -343,6 +346,7 @@ function makeNewSignup(existingCount) {
       device_type:      device,
       experience_level: rng.pick(EXPERIENCE),
       household_size:   loc.pg === 'lincoln' ? rng.int(5)+1 : null,
+      race:             loc.pg === 'lincoln' ? rng.pick(RACE_OPTIONS) : null,
     },
     classesRecommended: recommended,
     classesEnrolled: [{ ...recommended[0], enrolledDate: now, format: rng.pick(CLASS_FORMATS), completed: false }],

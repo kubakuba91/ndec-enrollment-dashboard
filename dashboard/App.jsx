@@ -356,6 +356,7 @@ function DetailPanel({ signup, onClose }) {
           <Row label="Device" value={ob.device_type} />
           <Row label="Experience" value={ob.experience_level} />
           {ob.household_size && <Row label="Household Size" value={ob.household_size} />}
+          {ob.race && <Row label="Race" value={ob.race} />}
         </Section>
 
         <Section title="Classes Recommended">
@@ -408,7 +409,7 @@ function exportCSV(signups, periodKey = 'all') {
   const rows = [
     ['ID','Display Name','User Login','Email','First Name','Last Name','Town','County','State','ZIP',
      'Registered','Last Login','Active',
-     'Internet at Home','Affordable Interest','Goal','Device','Experience','Household Size',
+     'Internet at Home','Affordable Interest','Goal','Device','Experience','Household Size','Race',
      'Classes Recommended','Classes Enrolled','Enrollment Dates','Completed',
      'Partner Group','Sponsor Code','Sponsor Status','Free Classes','Sponsor Household','Verified Date','Notes'],
   ];
@@ -419,7 +420,7 @@ function exportCSV(signups, periodKey = 'all') {
       s.town, s.county, s.state, s.zip,
       s.user_registered.toISOString(), s.last_login.toISOString(), s.isActive ? 'Yes' : 'No',
       ob.q2_internet_home ? 'Yes' : 'No', ob.q3_affordable_interest || '',
-      ob.main_goal, ob.device_type, ob.experience_level, ob.household_size || '',
+      ob.main_goal, ob.device_type, ob.experience_level, ob.household_size || '', ob.race || '',
       s.classesRecommended.map(c => c.name).join('; '),
       s.classesEnrolled.map(c => c.name).join('; '),
       s.classesEnrolled.map(c => c.enrolledDate.toISOString().slice(0,10)).join('; '),
@@ -533,6 +534,7 @@ function LiveFeed({ recentSignups, dashboardPeriod }) {
                     <FeedRow label="Device" value={s.onboarding.device_type} />
                     <FeedRow label="Experience" value={s.onboarding.experience_level} />
                     {s.onboarding.household_size && <FeedRow label="Household" value={s.onboarding.household_size} />}
+                    {s.onboarding.race && <FeedRow label="Race" value={s.onboarding.race} />}
                     {s.onboarding.q3_affordable_interest && <FeedRow label="Affordable?" value="Interested" color="#fbbf24" />}
                   </div>
                 </div>
